@@ -1,22 +1,48 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Ansible Role to clean Linux instances and free disk space.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Linux operative system
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+#log-files
+
+cri_log_files_remove_enabled: yes # activa o desactiva la eliminacion de archivos de logs. Sirve para hacer una simulacion sin eliminar nada y ver que archivos encuentra.
+
+cri_log_files_paths: "/var/log/resin" # ruta default de logs
+cri_log_files_patterns: "*" # patron de archivos que busca en esa ruta
+cri_log_files_age: 90d # tiemp ode antigüedad
+cri_log_files_recurse: yes # busqueda recursiva activada
+cri_log_files_hidden: yes # buscar tambien archivos ocultos
+cri_log_files_file_type: "file" # tipos de inodos a buscar. Por defecto ignora directorios y  enlaces simbolicos
+cri_log_files_follow: no # no sigue enlaces simbolicos por defecto
+
+#temp-files
+
+cri_temp_files_remove_enabled: yes # activa o desactiva la eliminacion de archivos temporales. Sirve para hacer una simulacion sin eliminar nada y ver que archivos encuentra.
+
+cri_temp_dump_files_paths: "/var/resin" # ruta default de archivos dumps de Resin.
+cri_temp_dump_files_patterns: "*.hprof" # patron de archivos dump que busca en esa ruta. Normalmente son de archivos de tipo "hprof".
+cri_temp_dump_files_recurse: no # estos archivos estan todos juntos en el mismo directorio
+cri_temp_dump_files_hidden: yes
+cri_temp_dump_files_file_type: "file"
+
+cri_temp_git_files_paths: "/var/resin/resin-data/default/.git" # ruta default de archivos temporales git de Resin.
+cri_temp_git_files_patterns: "*" # patron de archivos que busca en esa ruta. Hay de todo pero como son temporales se pueden eliminar todos.
+cri_temp_git_files_recurse: yes
+cri_temp_git_files_hidden: yes
+cri_temp_git_files_file_type: "any" # tipos de archivos a buscar. Hay de todo pero como son temporales eliminamos todo.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
@@ -27,12 +53,8 @@ Including an example of how to use your role (for instance, with variables passe
       roles:
          - { role: username.rolename, x: 42 }
 
-License
--------
-
-BSD
-
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Augusto Mendoza (amendoza@navent.com)
+

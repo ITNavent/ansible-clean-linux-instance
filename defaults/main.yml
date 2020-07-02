@@ -1,40 +1,40 @@
 ---
 
 #log-files
-curi_log_files_remove_enabled: yes
+cli_log_files_remove_enabled: yes
 
-curi_log_files_paths: "/var/log"
-curi_log_files_patterns: "*"
-curi_log_files_age: 90d
-curi_log_files_recurse: yes
-curi_log_files_hidden: yes
-curi_log_files_file_type: "file" # delete files,directories and symbolic links
-curi_log_files_follow: no # don't follow symbolic links by default
+cli_log_files_paths: "/var/log"
+cli_log_files_patterns: "*"
+cli_log_files_age: 90d
+cli_log_files_recurse: yes
+cli_log_files_hidden: yes
+cli_log_files_file_type: "file" # delete files,directories and symbolic links
+cli_log_files_follow: no # don't follow symbolic links by default
 
-curi_log_files_targets:
+cli_log_files_targets:
   - 
-    curi_log_files_paths: "{{curi_log_files_paths}}"
-    curi_log_files_patterns: "{{curi_log_files_patterns}}"
-    curi_log_files_age: "{{curi_log_files_age}}"
-    curi_log_files_recurse: "{{curi_log_files_recurse}}"
-    curi_log_files_hidden: "{{curi_log_files_hidden}}"
-    curi_log_files_file_type: "{{curi_log_files_file_type}}"
-    curi_log_files_follow: "{{curi_log_files_follow}}"
+    cli_log_files_paths: "{{cli_log_files_paths}}"
+    cli_log_files_patterns: "{{cli_log_files_patterns}}"
+    cli_log_files_age: "{{cli_log_files_age}}"
+    cli_log_files_recurse: "{{cli_log_files_recurse}}"
+    cli_log_files_hidden: "{{cli_log_files_hidden}}"
+    cli_log_files_file_type: "{{cli_log_files_file_type}}"
+    cli_log_files_follow: "{{cli_log_files_follow}}"
 
 
 #temp-files
-curi_temp_files_remove_enabled: yes
+cli_temp_files_remove_enabled: yes
 
-curi_temp_files_paths: "/tmp"
-curi_temp_files_patterns: "*"
-curi_temp_files_recurse: yes
-curi_temp_files_hidden: yes
-curi_temp_files_file_type: "any" # delete files,directories and symbolic links
+cli_temp_files_paths: "/tmp"
+cli_temp_files_patterns: "*"
+cli_temp_files_recurse: yes
+cli_temp_files_hidden: yes
+cli_temp_files_file_type: "any" # delete files,directories and symbolic links
 
-curi_temp_files_targets:
+cli_temp_files_targets:
   - 
-    curi_temp_files_paths: "{{curi_temp_files_paths}}"
-    curi_temp_files_patterns: "{{curi_temp_files_patterns}}"
-    curi_temp_files_recurse: "{{curi_temp_files_recurse}}"
-    curi_temp_files_hidden: "{{curi_temp_files_hidden}}"
-    curi_temp_files_file_type: "{{curi_temp_files_file_type}}"
+    cli_temp_files_paths: "{{cli_temp_files_paths}}"
+    cli_temp_files_patterns: "{{cli_temp_files_patterns}}"
+    cli_temp_files_recurse: "{{cli_temp_files_recurse}}"
+    cli_temp_files_hidden: "{{cli_temp_files_hidden}}"
+    cli_temp_files_file_type: "{{cli_temp_files_file_type}}"
