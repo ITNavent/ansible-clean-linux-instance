@@ -1,7 +1,7 @@
 ---
 
 -
-  name: "Clean Ubuntu Resin Instance - Show Ansible Role variables"
+  name: "Clean Ubuntu Linux Instance - Show Ansible Role variables"
   debug: 
     msg: 
       - "cli_log_files_remove_enabled={{cli_log_files_remove_enabled|default('<UNDEFINED>')}}"
@@ -9,12 +9,42 @@
       - "cli_temp_files_remove_enabled={{cli_temp_files_remove_enabled|default('<UNDEFINED>')}}"
       - "cli_temp_files_targets={{cli_temp_files_targets|default('<UNDEFINED>')}}"
 
+-
+  name: "Clean Linux Instance - Get source"
+  shell: "df -h . --output=source | tail -n 1 | xargs"
+  register: status_source
+
+-
+  name: "Clean Linux Instance - Get target"
+  shell: "df -h . --output=target | tail -n 1 | xargs"
+  register: status_target
+
+-
+  name: "Clean Linux Instance - Get filesystem total size"
+  shell: "df -h . --output=size | tail -n 1 | xargs"
+  register: status_size
+
+-
+  name: "Clean Linux Instance - Get initial used space percent"
+  shell: "df -h . --output=pcent | tail -n 1 | xargs"
+  register: initial_status_pcent
+
+-
+  name: "Clean Linux Instance - Get initial available space"
+  shell: "df -h . --output=avail | tail -n 1 | xargs"
+  register: initial_status_avail
+
+-
+  name: "Clean Linux Instance - Show initial status"
+  debug:
+    msg:
+      - "{{status_source.stdout}} ({{status_target.stdout}})  | Total: {{status_size.stdout}}  | Initial used space percent:  {{initial_status_pcent.stdout}}  | Initial available space:  {{initial_status_avail.stdout}}"
 
 
 #clean-log-files
 
 - 
-  name: "Clean Ubuntu Resin Instance - Find log files"
+  name: "Clean Ubuntu Linux Instance - Find log files"
   find:
     paths: "{{ item['cli_log_files_paths'] }}"
     patterns: "{{ item['cli_log_files_patterns'] }}"
@@ -30,7 +60,7 @@
     - cli_log_files_targets is defined
 
 -
-  name: "Clean Ubuntu Resin Instance - Show finded files"
+  name: "Clean Ubuntu Linux Instance - Show finded files"
   debug: 
     msg: 
       - "{{ (item.files | map(attribute='path') | list) }}"
@@ -39,7 +69,7 @@
     - cli_log_files_find_results is defined
 
 - # magia
-  name: "Clean Ubuntu Resin Instance - Prepare log files list" # transforma el list de files encontrados a un list de strings que son los paths solamente 
+  name: "Clean Ubuntu Linux Instance - Prepare log files list" # transforma el list de files encontrados a un list de strings que son los paths solamente 
   set_fact:  
     cli_log_files_find_results_prepared: "{{ (cli_log_files_find_results_prepared | default([])) + (item.files | map(attribute='path') | list) }}" # toma la array de objetos "files", se queda solo con el atributo "path" de cada objeto y lo convierte a "list" para que pueda ser mostrada en un debug msg
     # NOTA: combinar el set_fact con el with_items hace que se concatenen los items del with_items dntro de la variable del set_fact
@@ -49,7 +79,7 @@
     - cli_log_files_find_results is defined
 
 -
-  name: "Clean Ubuntu Resin Instance - Show prepared log files list"
+  name: "Clean Ubuntu Linux Instance - Show prepared log files list"
   debug: 
     msg: "{{ cli_log_files_find_results_prepared  }}" 
   when:
@@ -57,7 +87,7 @@
     - cli_log_files_find_results_prepared is defined
 
 - 
-  name: "Clean Ubuntu Resin Instance - Remove log files"
+  name: "Clean Ubuntu Linux Instance - Remove log files"
   become: yes
   file:
     path: "{{ item }}"
@@ -72,7 +102,7 @@
 #clean-temp-files
 
 - 
-  name: "Clean Ubuntu Resin Instance - Find temp files"
+  name: "Clean Ubuntu Linux Instance - Find temp files"
   find:
     paths: "{{ item['cli_temp_files_paths'] }}"
     patterns: "{{ item['cli_temp_files_patterns'] }}"
@@ -87,7 +117,7 @@
     - cli_temp_files_targets is defined
 
 -
-  name: "Clean Ubuntu Resin Instance - Show finded files"
+  name: "Clean Ubuntu Linux Instance - Show finded files"
   debug: 
     msg: 
       - "{{ (item.files | map(attribute='path') | list) }}"
@@ -96,7 +126,7 @@
     - cli_temp_files_find_results is defined
 
 - # magia
-  name: "Clean Ubuntu Resin Instance - Prepare temp files list" # transforma el list de files encontrados a un list de strings que son los paths solamente 
+  name: "Clean Ubuntu Linux Instance - Prepare temp files list" # transforma el list de files encontrados a un list de strings que son los paths solamente 
   set_fact:  
     cli_temp_files_find_results_prepared: "{{ (cli_temp_files_find_results_prepared | default([])) + (item.files | map(attribute='path') | list) }}" # toma la array de objetos "files", se queda solo con el atributo "path" de cada objeto y lo convierte a "list" para que pueda ser mostrada en un debug msg
     # NOTA: combinar el set_fact con el with_items hace que se concatenen los items del with_items dntro de la variable del set_fact
@@ -106,7 +136,7 @@
     - cli_temp_files_find_results is defined
 
 -
-  name: "Clean Ubuntu Resin Instance - Show prepared temp files list"
+  name: "Clean Ubuntu Linux Instance - Show prepared temp files list"
   debug: 
     msg: "{{ cli_temp_files_find_results_prepared  }}" 
   when:
@@ -114,7 +144,7 @@
     - cli_temp_files_find_results_prepared is defined
 
 - 
-  name: "Clean Ubuntu Resin Instance - Remove temp files"
+  name: "Clean Ubuntu Linux Instance - Remove temp files"
   become: yes
   file:
     path: "{{ item }}"
@@ -123,3 +153,21 @@
   when:
     - cli_temp_files_remove_enabled is undefined or (cli_temp_files_remove_enabled is defined and cli_temp_files_remove_enabled == true) # enabled by default
     - cli_temp_files_find_results_prepared is defined
+
+-
+  name: "Clean Linux Instance - Final status - Get used space percent"
+  shell: "df -h . --output=pcent | tail -n 1 | xargs"
+  register: final_status_pcent
+
+-
+  name: "Clean Linux Instance - Final status - Get available space"
+  shell: "df -h . --output=avail | tail -n 1 | xargs"
+  register: final_status_avail
+
+-
+  name: "Clean Linux Instance - Show status"
+  debug:
+    msg:
+      - "{{status_source.stdout}} ({{status_target.stdout}})  | Total: {{status_size.stdout}}  | Initial used space percent:  {{initial_status_pcent.stdout}}  | Initial available space:  {{initial_status_avail.stdout}}"
+      - "{{status_source.stdout}} ({{status_target.stdout}})  | Total: {{status_size.stdout}}  | Final used space percent:  {{final_status_pcent.stdout}}  | Final available space:  {{final_status_avail.stdout}}"
+
